@@ -41,3 +41,23 @@ The Shardmaster uses Paxos for replication to maintain consistency across multip
 - Fault Tolerance: The system can continue operating as long as a majority of Shardmaster servers are available.
 - Durability: Updates to configurations are reliably replicated across servers, ensuring no loss of data.
 
+## kV server
+This platform serves as a distributed data storage system. Each Key-Value (KV) server operates as part of a Paxos replica group, where every server within the group maintains an identical key-value store. If a server falls behind due to network partitioning, the Paxos protocol enables it to catch up by learning about the missed operations once it becomes reachable again.
+
+## Major Operations of the KV Server
+1. Get
+Retrieves the value associated with a given key from the key-value store.
+
+2. Put
+Updates or inserts a key-value pair into the store.
+
+3. Reconfigure
+Periodically checks with the Shardmaster for configuration changes. If a change is detected, the server sends shards it owns to their newly assigned replica groups based on the updated configuration.
+
+4. ReceiveShard
+Handles incoming shards from other servers during reconfiguration. The received shard data is used to update the server's key-value store.
+
+5. Ensuring Consistency and Concurrent Access
+Consistency During Operations: The server ensures consistency of the key-value store even during concurrent access.
+Reconfiguration Safety: If a reconfiguration is in progress, Get and Put operations are temporarily paused to prevent inconsistencies in the database. This guarantees that the data remains synchronized and stable during shard migrations.
+Through the combination of Paxos for replication, careful handling of reconfiguration, and safeguards for concurrent access, this system ensures robust, consistent, and highly available distributed data storage.
