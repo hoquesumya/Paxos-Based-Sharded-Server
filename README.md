@@ -20,7 +20,7 @@ The Shardmaster manages a sequence of numbered configurations, each describing a
 
 Key/value clients and servers communicate with the Shardmaster to obtain the current or past configurations. These configurations determine the mapping of shards to replica groups, enabling load balancing and ensuring the system remains operational during changes.
 
-# RPC Interface
+- RPC Interface
 The Shardmaster exposes the following RPC operations:
 
 1. Join (GID, Servers[])
