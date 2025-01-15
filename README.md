@@ -44,7 +44,7 @@ The Shardmaster uses Paxos for replication to maintain consistency across multip
 ## kV server
 This platform serves as a distributed data storage system. Each Key-Value (KV) server operates as part of a Paxos replica group, where every server within the group maintains an identical key-value store. If a server falls behind due to network partitioning, the Paxos protocol enables it to catch up by learning about the missed operations once it becomes reachable again.
 
-## Major Operations of the KV Server
+### Major Operations of the KV Server
 1. Get
 Retrieves the value associated with a given key from the key-value store.
 
