@@ -61,3 +61,16 @@ Handles incoming shards from other servers during reconfiguration. The received 
 Consistency During Operations: The server ensures consistency of the key-value store even during concurrent access.
 Reconfiguration Safety: If a reconfiguration is in progress, Get and Put operations are temporarily paused to prevent inconsistencies in the database. This guarantees that the data remains synchronized and stable during shard migrations.
 Through the combination of Paxos for replication, careful handling of reconfiguration, and safeguards for concurrent access, this system ensures robust, consistent, and highly available distributed data storage.
+
+## Client
+lients interact with replica groups via RPCs to perform three key operations:
+
+1. Put(key, val) – Updates the value of a given key.
+2. Get(key) – Retrieves the current value of a key.
+3. PutHash(key, val) – Updates the value of a key and returns its previous value, where the new value is computed as new_val = hash(prv_val + val).
+T
+he storage system guarantees sequential consistency for applications using its client interface. Specifically, all completed application calls to Clerk.Get(), Clerk.Put(), and Clerk.PutHash() methods in shardkv/client.go must appear to have affected all replicas in the same order, with at-most-once semantics. This means:
+
+A Clerk.Get() should always return the most recent value written by the corresponding Put() or PutHash() operation for the same key.
+Each application call to Clerk.Put() must appear to be executed once and in order, ensuring that the key-value database is updated exactly once. However, internally, the client.go may need to send multiple Put() and PutHash() RPCs to find a responsive kvpaxos server replica, due to potential network unreliability.
+This approach becomes more complex when Get and Put requests coincide with configuration changes, requiring careful handling to maintain consistency and avoid conflicts.
