@@ -74,3 +74,8 @@ he storage system guarantees sequential consistency for applications using its c
 A Clerk.Get() should always return the most recent value written by the corresponding Put() or PutHash() operation for the same key.
 Each application call to Clerk.Put() must appear to be executed once and in order, ensuring that the key-value database is updated exactly once. However, internally, the client.go may need to send multiple Put() and PutHash() RPCs to find a responsive kvpaxos server replica, due to potential network unreliability.
 This approach becomes more complex when Get and Put requests coincide with configuration changes, requiring careful handling to maintain consistency and avoid conflicts.
+
+## Usage
+To test the program, go to shardkv folder and run --
+```go
+go test -run  'TestFunction'
